@@ -1,39 +1,32 @@
 
-
-const loadPhone = async (searchText) => {
+const loadPhone = async (searchText, isShowAll) => {
     const res = await fetch(`https://openapi.programming-hero.com/api/phones?search=${searchText}`)
     const data = await res.json();
     const phones = (data.data);
-    showPhones(phones);
+    showPhones(phones, isShowAll);
+
 }
 
-function showPhones(phones){
-
-   
+function showPhones(phones, isShowAll){
+    toggleLoadingSpinner(true);
     const phoneContainer = document.getElementById('phone-container');
-
     // clear previous displayed item
      phoneContainer.textContent = '';
-
-
     // show all button enable and disable 
     const showAllBtn = document.getElementById('show-all-btn')
-    if(phones.length > 15){
+    if(phones.length > 15 && !isShowAll){
         showAllBtn.classList.remove('hidden')
     }else{
         showAllBtn.classList.add('hidden')
     }
+    console.log('is show all valeu', isShowAll);
+    // limit to show items if more than 15 && not isShowALL
+    if(!isShowAll){
+        phones = phones.slice(0, 15);
+    }
+        
 
-    // limit to show items if more than 15
-    phones = phones.slice(0, 15);
-
-    // const showAll = () =>{
-    //     phones = phones
-    //     return phones
-    // }
     phones.forEach(phone => {
-      
-
         const phoneCard = document.createElement('div');
         phoneCard.classList = 'card  bg-base-100 shadow-xl';
         phoneCard.innerHTML = `
@@ -50,16 +43,33 @@ function showPhones(phones){
         phoneContainer.appendChild(phoneCard);
         
     });
-    
-
-    
+    toggleLoadingSpinner(false);
 }
-   
-    const searchItems = () => {
-        searchText = document.getElementById('search-box').value;
-        console.log(searchText);
-        loadPhone(searchText)
+    // loading spinner
+    const toggleLoadingSpinner = (isLoading) => {
+        const loadingSpinner = document.getElementById('loading-spinner')
+        if(isLoading){
+            loadingSpinner.classList.remove('hidden');
+        }else{
+            loadingSpinner.classList.add('hidden');
+        }
+
     }
+    //search control
+    const searchItems = (isShowAll) => {
+
+        toggleLoadingSpinner(true)
+        searchText = document.getElementById('search-box').value;
+        loadPhone(searchText, isShowAll);
+    }
+
+    // show all data handler
+    const showAllData = () => {
+        console.log('show all btn clicked');
+        searchItems(true);
+    }
+
+
 
    
     
