@@ -5,7 +5,6 @@ const loadPhone = async (searchText) => {
     const data = await res.json();
     const phones = (data.data);
     showPhones(phones);
-    console.log(phones);
 }
 
 function showPhones(phones){
@@ -15,8 +14,23 @@ function showPhones(phones){
 
     // clear previous displayed item
      phoneContainer.textContent = '';
-    
 
+
+    // show all button enable and disable 
+    const showAllBtn = document.getElementById('show-all-btn')
+    if(phones.length > 15){
+        showAllBtn.classList.remove('hidden')
+    }else{
+        showAllBtn.classList.add('hidden')
+    }
+
+    // limit to show items if more than 15
+    phones = phones.slice(0, 15);
+
+    // const showAll = () =>{
+    //     phones = phones
+    //     return phones
+    // }
     phones.forEach(phone => {
       
 
@@ -36,12 +50,16 @@ function showPhones(phones){
         phoneContainer.appendChild(phoneCard);
         
     });
-}
+    
 
-function searchItems() {
-    console.log('search button clicked')
-    const searchText = document.getElementById('search-box').value;
-    console.log(searchText);
-    loadPhone(searchText);
+    
 }
+   
+    const searchItems = () => {
+        searchText = document.getElementById('search-box').value;
+        console.log(searchText);
+        loadPhone(searchText)
+    }
 
+   
+    
